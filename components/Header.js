@@ -1,8 +1,8 @@
-import Image from "next/image";
 import React from "react";
 import { SearchIcon, PlusCircleIcon} from '@heroicons/react/outline';
 import { HomeIcon} from "@heroicons/react/solid";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Image from "next/image";
 
 export default function Header() {
     const {data:session} = useSession();
