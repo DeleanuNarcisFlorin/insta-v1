@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../atom/modalAtom";
 import Image from "next/image";
 
+
 export default function Header() {
     const {data:session} = useSession();
     const [open, setOpen] = useRecoilState(modalState);
