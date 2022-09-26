@@ -1,3 +1,5 @@
+import { useRecoilState } from "recoil";
+import { modalState } from "../atom/modalAtom";
 import Modal from "react-modal";
 import { CameraIcon } from "@heroicons/react/outline";
 import { useRef, useState } from "react";
@@ -9,14 +11,14 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db, storage } from "../firebase";
-import { useSession } from "next-auth/react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { userState } from "../atom/userAtom";
 
 export default function UploadModal() {
   const [open, setOpen] = useRecoilState(modalState);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { data: session } = useSession();
+  const [currentUser] = useRecoilState(userState)
   async function uploadPost() {
     if (loading) return;
 
@@ -24,8 +26,8 @@ export default function UploadModal() {
 
     const docRef = await addDoc(collection(db, "posts"), {
       caption: captionRef.current.value,
-      username: session.user.username,
-      profileImg: session.user.image,
+      username: currentUser?.username,
+      profileImg: currentUser.userImg,
       timestamp: serverTimestamp(),
     });
 
@@ -48,6 +50,7 @@ export default function UploadModal() {
     if (event.target.files[0]) {
       reader.readAsDataURL(event.target.files[0]);
     }
+
     reader.onload = (readerEvent) => {
       setSelectedFile(readerEvent.target.result);
     };
@@ -79,6 +82,7 @@ export default function UploadModal() {
                 className="cursor-pointer h-14 bg-red-200 p-2 rounded-full border-2 text-red-500"
               />
             )}
+
             <input
               type="file"
               hidden
